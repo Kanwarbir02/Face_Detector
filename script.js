@@ -1,5 +1,6 @@
 const video = document.getElementById("Video");
 
+//All The models for face detections
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
     faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
@@ -7,6 +8,7 @@ Promise.all([
     faceapi.nets.faceExpressionNet.loadFromUri("/models")
 ]).then(startVideo)
 
+//Startvideo Funstion
 function startVideo() {
     navigator.getUserMedia(
         { video: {} },
@@ -18,9 +20,21 @@ function startVideo() {
 
 video.addEventListener("play", function(){
 
+    // Creating The Canvas for face detections in video
+    const canvas = faceapi.createCanvasFromMedia(video);
+    document.body.append(canvas)
+
+    //Display Size to be used for canvas box
+    const videoDisplaySize = { width: video.width, height: video.height};
+
     setInterval(async () => {
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
 
         console.log(detections);
+
+        const resizedDetections = faceapi.resizeResults(detections, videoDisplaySize);
+
+        //For Drawing the detection boxes
+        faceapi.draw.drawDetections(canvas, resizedDetections);
     }, 1000);
 })
