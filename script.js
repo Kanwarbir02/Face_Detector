@@ -27,12 +27,18 @@ video.addEventListener("play", function(){
     //Display Size to be used for canvas box
     const videoDisplaySize = { width: video.width, height: video.height};
 
+
+    faceapi.matchDimensions(canvas, videoDisplaySize)
+
     setInterval(async () => {
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
 
         console.log(detections);
 
         const resizedDetections = faceapi.resizeResults(detections, videoDisplaySize);
+
+        //Clearing Canvas off the screen
+        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
 
         //For Drawing the detection boxes
         faceapi.draw.drawDetections(canvas, resizedDetections);
