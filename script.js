@@ -42,5 +42,7 @@ video.addEventListener("play", function(){
 
         //For Drawing the detection boxes
         faceapi.draw.drawDetections(canvas, resizedDetections);
+        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+        faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
     }, 1000);
 })
